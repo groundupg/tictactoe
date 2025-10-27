@@ -21,17 +21,17 @@ probability of all possible outcomes**
 
 ```
   type Outcome:
-    probability: float
-    value: float
+      probability: float
+      value: float
 
   fn o_ev (p: float v: float) -> float:
-    return p * v
+      return p * v
 
   fn EV (no: list[Outcome]) -> float:
-    current: float
-    for o in no:
-      current += o_ev(o.probability, o.value)
-    return current 
+      current: float
+      for o in no:
+        current += o_ev(o.probability, o.value)
+      return current 
 ```
 
 ## Simulation
@@ -72,13 +72,14 @@ baseline.
 INVESTMENTS: float
 PROFIT: float
 EXPENSES: float
-
 BASELINE: float = 8500
 
 fn capital (i, p):
-  return i + p
+    return i + p
 
 
-fn simulate (d: Decision) -> Outcome:
-  
+fn simulate (d: Decision, i: float, p: float) -> Outcome:
+    c := capital(i, p)
+    for i:= 0; i < 30; i++:
+        
 ```
