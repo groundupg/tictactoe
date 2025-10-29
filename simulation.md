@@ -1,4 +1,4 @@
-# 27.10.2025
+# Simulation
 
 The primary utility of a computer is it's capacity for mass computation. It is this capacity for
 large computation which saw the computer replacing humans as the defacto means of computation.
@@ -34,8 +34,6 @@ probability of all possible outcomes**
       return current 
 ```
 
-## Simulation
-
 The above are very simple computations to calculate the EV of a given decision. However, the computation
 has a requirement -- the list of possible outcomes of making a decision, with their probability
 & value.
@@ -56,30 +54,68 @@ I, however, think that we can do more.
 I think that we can use the simulation capacity of computers to apply these methods to business &
 science.
 
-### A Simulation Function
+## A Simulator
 
-A *Simulator* works through the application of a simulate function applied to a decision n times.
-Therefore, a *simulate* function must be defined.
+If we are to take the *Monte Carlo Method* as a means of building an initial simulator, we may
+then have a view on how a simulator program may be built for a specific use case.
 
-Take a business MS.
-MS has a baseline constraint of cash flow, £8500.
-The value metric of MS is the total amount of capital over 30 years.
+The Monte Carlo Method takes a stepped pattern, using random sampling based on a probability
+distribution to perform a deterministic computation.
 
-MS wants a business strategy which maximises their value metric while never dropping below their
-baseline.
+The method takes a stepped pattern:
 
-```
-INVESTMENTS: float
-PROFIT: float
-EXPENSES: float
-BASELINE: float = 8500
+    1. Define a domain of possible inputs
+    2. Generate inputs randomly from a probability distribution over the domain
+    3. Perform a deterministic computation of the outputs
+    4. Aggregate the results
 
-fn capital (i, p):
-    return i + p
+We will, in the following section, take this method as a reference in building a simulator program
+for our use case(s).
 
+### Tic Tac Toe
 
-fn simulate (d: Decision, i: float, p: float) -> Outcome:
-    c := capital(i, p)
-    for i:= 0; i < 30; i++:
-        
-```
+*statements*
+
+tic tac toe is a turn-based game.
+tic tac toe has 2 players.
+player 1 has a mark of 1, player 2 has a mark of 2.
+tic tac toe is played on a 3x3 board.
+each cell on the board can either be empty, or one of the player's marks.
+a win occurs when a player has 3 joined cells -- diagonal, horizontal, or veritcal.
+on every turn a player places their mark on an empty cell.
+if all cells are filled and there is no win, the game ends in a draw.
+
+*types*
+
+type Cell: enum{0, 1, 2} # Empty, p1, or p2
+type Board: [3][3]Cell
+type Outcome: enum{0, 1, 2} # Draw, Player 1 win, Player 2 Win
+type Player: enum{1, 2} # Player 1 or 2's turn
+
+*functions*
+
+fn init_b() -> Board:
+    return [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+fn place(p: Player, b: Board, i) -> Board:
+    return b[i] = p
+
+fn swap(t: Turn):
+    if t == 1:
+        return 2
+    return 1
+
+fn run(b: Board, p: Player) -> Outcome:
+    b = place(p, b, determine_i(b, p))
+    if win(b):
+        return p
+    if draw(b):
+        return 0
+    return run(b, swap(t))
+
+fn win(b: Board) -> bool:
+    
+    
+*main event*
+
+run(init_b(), randomise())
