@@ -221,3 +221,50 @@ P2 WIN RATE: 43.65547
 DRAW RATE: 12.69883
 ```
 
+How might we improve the win rate for Player 1?
+
+### Applying Strategy
+
+Using the same `DetermineMove` function, we can split the strategy in to two:
+	- `if p == 1 -> p1_strat`
+	- `if p == 2 -> p2_strat`
+
+To measure the updated strategy for p1 effectively, we will keep the same random legal move
+strategy for p2:
+```go
+func DetermineMove(b Board, p Player) [2]Player {
+	if p == 1 {
+		return p1_strat(b)
+	}
+	return p2_strat(b)
+}
+
+func p2_strat(b Board) [2]Player {
+	x := Player(rand.Intn(3))
+	y := Player(rand.Intn(3))
+	if b[x][y] == Nil {
+		return [2]Player{x, y}
+	}
+	return p2_strat(b)
+}
+```
+
+P1 will employ a measured strategy, of assessing all legal moves and coming to a decision upon
+which move is best.
+An assessed move may look like an associated score & the move attached to that score.
+
+```go
+func p1_strat(b Board) [2]Player {
+	var assessed [][2]Assessed
+	for i:=0; i<len(b); i++ {
+		for j:=0; i<len(b[i]); i++ {
+			if b[i][j] == Nil {
+				assessed.append(b, [2]{i, j})
+			}
+		}
+	}
+	return legal
+}
+
+[44, [x, y]]
+`
