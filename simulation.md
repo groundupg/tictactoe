@@ -119,3 +119,105 @@ fn win(b: Board) -> bool:
 *main event*
 
 run(init_b(), randomise())
+
+## 09.11.25 -- Implementation of a Tic Tac Toe Simulator
+
+I have took the above as a rough guide in implementing a simulator for Tic Tac Toe, in the programming
+language golang.
+
+The types used:
+```go
+type Player uint8
+type Board [3][3]Player
+
+const (
+	Nil Player = iota
+	P1
+	P2
+)
+```
+
+The main event:
+```go
+func main() {
+	b := Init()
+	first := flip()
+	fmt.Print("FIRST: ", first, "\n")
+	fmt.Print(b, "\n")
+	Run(b, first)
+}
+
+func Init() Board {
+	return Board{{Nil, Nil, Nil}, {Nil, Nil, Nil}, {Nil, Nil, Nil}}
+}
+
+func Run(b Board, p Player) Player {
+	b = Place(b, p, determine_i(b, p))
+	fmt.Print(b, "\n")
+	if Win(b, p) {
+		fmt.Printf("WINNER: %d\n", p)
+		return p
+	}
+	if Draw(b) {
+		fmt.Printf("DRAW\n")
+		return 0
+	}
+	return Run(b, Swap(p))
+}
+
+func Place(b Board, p Player, i [2]int) Board {
+	bc := b
+	bc[i[0]][i[1]] = p
+	return bc
+}
+```
+
+The `main()` function simulates the execution of a single game of tic tac toe between two players.
+It is clear from looking at the execution of the `main()` function that the process of the game
+is detailed in the runtime execution of the `Run` function.
+
+If we are to examine these functions from the view of examining both player's strategy it becomes
+obvious that the measure of strategy of a given player is dependent upon the output of the function `determine_i(b, p)`.
+The `Place` function uses the output of `determine_i` to make a move.
+
+Currently, the state of `determine_i` produces a random legal move on the board. There is no strategic
+logic embedded within this function, resulting in a random winner each time.
+
+Let us change this; instead of a random winner each time, we will apply tic tac toe strategy to
+one of the players, with the hope they will develop a greater win rate than the other.
+
+However, before we apply this, let us bring the program to a state where we can measure the win
+rate of each. Let us prove win rate.
+
+### Proving Win Rate
+
+We can define *win rate* as the % of wins over n games played.
+The execution of `Run` produces an outcome of 0 for draw, 1 for P1 win, 2 for P2 win.
+
+
+```go
+func main() {
+	n := 10000000
+	results := [3]int{0, 0, 0}
+	for i := 0; i < n; i++ {
+		b := Init()
+		first := flip()
+		results[Run(b, first)]++
+	}
+
+	fmt.Print("P1 WIN RATE: ", float64(results[1])/float64(n)*100, "\r\n")
+	fmt.Print("P2 WIN RATE: ", float64(results[2])/float64(n)*100, "\r\n")
+	fmt.Print("DRAW RATE: ", float64(results[0])/float64(n)*100, "\r\n")
+}
+```
+
+Running this computation confirms the Win Rate for P1 & P2 are effectively the same:
+```shell
+go run simulation.go
+
+# Standard Output
+P1 WIN RATE: 43.6457
+P2 WIN RATE: 43.65547
+DRAW RATE: 12.69883
+```
+

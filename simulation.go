@@ -1,7 +1,8 @@
 package main
 
-import "fmt"
 import "math/rand"
+
+import "fmt"
 
 type Player uint8
 type Board [3][3]Player
@@ -13,11 +14,17 @@ const (
 )
 
 func main() {
-	b := Init()
-	first := flip()
-	fmt.Print("FIRST: ", first, "\n")
-	fmt.Print(b, "\n")
-	Run(b, first)
+	n := 10000000
+	results := [3]int{0, 0, 0}
+	for i := 0; i < n; i++ {
+		b := Init()
+		first := flip()
+		results[Run(b, first)]++
+	}
+
+	fmt.Print("P1 WIN RATE: ", float64(results[1])/float64(n)*100, "\r\n")
+	fmt.Print("P2 WIN RATE: ", float64(results[2])/float64(n)*100, "\r\n")
+	fmt.Print("DRAW RATE: ", float64(results[0])/float64(n)*100, "\r\n")
 }
 
 func Init() Board {
@@ -25,22 +32,20 @@ func Init() Board {
 }
 
 func Run(b Board, p Player) Player {
-	b = Place(b, p, determine_i(b, p))
-	fmt.Print(b, "\n")
+	b = Place(b, p, DetermineMove(b, p))
 	if Win(b, p) {
-		fmt.Printf("WINNER: %d\n", p)
 		return p
 	}
 	if Draw(b) {
-		fmt.Printf("DRAW\n")
 		return 0
 	}
 	return Run(b, Swap(p))
 }
 
 func Place(b Board, p Player, i [2]int) Board {
-	b[i[0]][i[1]] = p
-	return b
+	bc := b
+	bc[i[0]][i[1]] = p
+	return bc
 }
 
 func Swap(p Player) Player {
@@ -116,13 +121,13 @@ func vertical_win(b Board, p Player) bool {
 	return false
 }
 
-func determine_i(b Board, p Player) [2]int {
+func DetermineMove(b Board, p Player) [2]int {
 	x := rand.Intn(3)
 	y := rand.Intn(3)
 	if b[x][y] == Nil {
 		return [2]int{x, y}
 	}
-	return determine_i(b, p)
+	return DetermineMove(b, p)
 }
 
 func flip() Player {
