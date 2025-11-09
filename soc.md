@@ -254,17 +254,29 @@ which move is best.
 An assessed move may look like an associated score & the move attached to that score.
 
 ```go
+type Assessed struct {
+	ev float64
+	move  [2]Player
+}
+
+func Assess(b Board, m [2]Player) Assessed {
+	bc := Place(b, 1, m)
+	if Win(bc, 1) {
+		return Assessed{move: m, ev: 100}
+	}
+	return Assessed{move: m, ev: 50}
+}
+
 func p1_strat(b Board) [2]Player {
-	var assessed [][2]Assessed
-	for i:=0; i<len(b); i++ {
-		for j:=0; i<len(b[i]); i++ {
+	var assessed []Assessed
+	for i := 0; i < len(b); i++ {
+		for j := 0; j < len(b[i]); j++ {
 			if b[i][j] == Nil {
-				assessed.append(b, [2]{i, j})
+				assessed = append(assessed, Assess(b, [2]Player{Player(i), Player(j)}))
 			}
 		}
 	}
-	return legal
+	sort.Slice(assessed, func(i, j int) bool { return assessed[i].ev > assessed[j].ev })
+	move := assessed[0].move
+	return move
 }
-
-[44, [x, y]]
-`

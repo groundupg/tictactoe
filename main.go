@@ -14,7 +14,7 @@ const (
 )
 
 func main() {
-	n := 1000000
+	n := 1
 	results := [3]int{0, 0, 0}
 	for i := 0; i < n; i++ {
 		b := Init()
