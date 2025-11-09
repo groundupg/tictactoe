@@ -14,7 +14,7 @@ const (
 )
 
 func main() {
-	n := 10000000
+	n := 1000000
 	results := [3]int{0, 0, 0}
 	for i := 0; i < n; i++ {
 		b := Init()
@@ -22,9 +22,10 @@ func main() {
 		results[Run(b, first)]++
 	}
 
-	fmt.Print("P1 WIN RATE: ", float64(results[1])/float64(n)*100, "\r\n")
-	fmt.Print("P2 WIN RATE: ", float64(results[2])/float64(n)*100, "\r\n")
-	fmt.Print("DRAW RATE: ", float64(results[0])/float64(n)*100, "\r\n")
+	fmt.Print("GAMES PLAYED: ", n, "\r\n")
+	fmt.Print("P1 WIN RATE: ", float64(results[1])/float64(n)*100, "%\r\n")
+	fmt.Print("P2 WIN RATE: ", float64(results[2])/float64(n)*100, "%\r\n")
+	fmt.Print("DRAW RATE: ", float64(results[0])/float64(n)*100, "%\r\n")
 }
 
 func Init() Board {
@@ -42,7 +43,7 @@ func Run(b Board, p Player) Player {
 	return Run(b, Swap(p))
 }
 
-func Place(b Board, p Player, i [2]int) Board {
+func Place(b Board, p Player, i [2]Player) Board {
 	bc := b
 	bc[i[0]][i[1]] = p
 	return bc
