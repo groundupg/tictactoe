@@ -280,3 +280,31 @@ func p1_strat(b Board) [2]Player {
 	move := assessed[0].move
 	return move
 }
+```
+
+## 10.12.25
+
+I have just deleted all of the source code files which were in this directory. What I would like to
+do is scrap this simulation thing and build a user-facing tic tac toe program.
+We will assume that the user of this tic tac toe program is the user of the machine which runs
+the tictactoe executable.
+The user will have a friend which they play tictactoe with. Viz, they will not play against the
+computer.
+
+**Program - `tictactoe`**
+
+var T := `X`
+
+1. DISPLAY - A graphical interface is displayed on the user's monitor, with the lines representing a 3x3 table,
+		where each cell is empty
+		
+2. CLICK - Listen until click of an empty cell, T will display on the given cell.
+
+3. SWAP - if T == `X` {T=`O`} else {T=`X`}
+
+3. WIN? - If 3 `X`|`O` in a diagonal|horizontal|vertical row, display `WIN: X|O`, end
+
+3. DRAW? - If no empty cells, display `DRAW`, end
+
+4. Jump to 2.
+```
